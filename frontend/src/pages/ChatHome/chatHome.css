@@ -1,0 +1,27 @@
+.chat-time {
+  font-size: 12px;
+  color: #0084ff;
+  margin: 0;
+}
+.chat-badge {
+  background: blue;
+  width: 18px;
+  height: 18px;
+  color: white;
+  border-radius: 9px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  background: linear-gradient(135deg, #0084ff 0%, #a200ff 100%);
+}
+.chat-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 3px;
+  align-self: center;
+}
+.main-page {
+  --padding-top: 30px;
+}

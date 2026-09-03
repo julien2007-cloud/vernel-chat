@@ -1,0 +1,15 @@
+/* For information on how to create your own theme, please refer to:
+http://ionicframework.com/docs/theming/ */
+:root {
+  --ion-default-font: "Poppins", sans-serif;
+  --input-background-color:#F9FAFB;
+}
+html.md {
+  --ion-default-font: "Poppins", sans-serif;
+}
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+}

@@ -1,0 +1,21 @@
+
+.signup-input {
+  border-radius: 12px;
+  --padding-inline: 16px;
+  --border-radius: 12px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --background: var(--input-background-color);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+.fieldBox {
+  max-width: 169px;
+  padding-top: 24px;
+}
+.fieldBox-others {
+  max-width: 354px;
+  height: 74px;
+}
