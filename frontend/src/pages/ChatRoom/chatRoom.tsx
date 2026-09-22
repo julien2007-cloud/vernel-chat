@@ -26,25 +26,22 @@ const ChatRoom: React.FC = () => {
     message: string;
     timestamp: string;
   }
+  const baseUrl = import.meta.env.VITE_API_URL;
   const { friendId } = useParams<{ friendId: string }>();
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatMessage, setChatmessage] = useState<string>("");
   const token = localStorage.getItem("token");
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     const getMessages = async () => {
       try {
-        const result = await fetch(
-          `http://localhost:5000/getAllmessages/${friendId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const result = await fetch(`${baseUrl}/getAllmessages/${friendId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await result.json();
         if (data.messages.length == 0) {
           console.log("No messages availables");
@@ -108,7 +105,7 @@ const ChatRoom: React.FC = () => {
   };
 
   const relocateHome = () => {
-    console.log("Sending you back to the home page")
+    console.log("Sending you back to the home page");
     router.push("/chatHome", "back", "pop");
   };
 

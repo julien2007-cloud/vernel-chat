@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react";
 const ChatHome: React.FC = () => {
   const router = useIonRouter();
   const token = localStorage.getItem("token");
+  const baseUrl = import.meta.env.VITE_API_URL;
   const [friendsArray, setfriendsArray] = useState<friend[]>([]);
 
   // interface friend {
@@ -33,7 +34,7 @@ const ChatHome: React.FC = () => {
     const getAllfriends = async () => {
       try {
         const result = await fetch(
-          "http://localhost:5000/getAllconnectedfriends",
+          `${baseUrl}/getAllconnectedfriends`,
           {
             method: "GET",
             headers: {

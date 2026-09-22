@@ -15,7 +15,7 @@ const Login: React.FC = () => {
   const router = useIonRouter();
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-
+  const baseUrl = import.meta.env.VITE_API_URL;
   const loginCompleted = async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
@@ -23,16 +23,13 @@ const Login: React.FC = () => {
         email: email,
         password: password,
       };
-      const push_new_user_result = await fetch(
-        "http://localhost:5000/loginUser",
-        {
-          method: "POST",
-          body: JSON.stringify(new_user_object),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const push_new_user_result = await fetch(`${baseUrl}/loginUser`, {
+        method: "POST",
+        body: JSON.stringify(new_user_object),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (!push_new_user_result.ok) {
         throw new Error(
           `Request failed with status ${push_new_user_result.status}`

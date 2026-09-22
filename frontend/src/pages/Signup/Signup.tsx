@@ -12,7 +12,7 @@ import "./Signup.css";
 import { useState } from "react";
 const Signup: React.FC = () => {
   const router = useIonRouter();
-
+  const baseUrl = import.meta.env.VITE_API_URL;
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [password, setPassword] = useState("");
@@ -24,30 +24,27 @@ const Signup: React.FC = () => {
     e.preventDefault();
     try {
       if (confirmedPassword == password) {
-          const new_user_object = {
-            firstname: firstName,
-            lastname: lastName,
-            email: email,
-            password: password,
-          };
-          const push_new_user_result = await fetch(
-            "http://localhost:5000/addUser",
-            {
-              method: "POST",
-              body: JSON.stringify(new_user_object),
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
+        const new_user_object = {
+          firstname: firstName,
+          lastname: lastName,
+          email: email,
+          password: password,
+        };
+        const push_new_user_result = await fetch(`${baseUrl}/addUser`, {
+          method: "POST",
+          body: JSON.stringify(new_user_object),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!push_new_user_result.ok) {
+          throw new Error(
+            `Request failed with status ${push_new_user_result.status}`
           );
-          if (!push_new_user_result.ok) {
-            throw new Error(
-              `Request failed with status ${push_new_user_result.status}`
-            );
-          } 
+        }
         const json = await push_new_user_result.json();
         console.log("Sign up completed", json);
-        localStorage.setItem("token",json.token)
+        localStorage.setItem("token", json.token);
         router.push("/chatHome", "forward", "replace");
       } else {
         setMismatch(true);

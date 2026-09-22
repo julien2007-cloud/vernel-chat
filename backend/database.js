@@ -1,10 +1,6 @@
 const Pool = require("pg").Pool;
 const pool = new Pool({
-  user: "postgres",
-  password: "postgres",
-  host: "localhost",
-  port: "5432",
-  database: "chat_app_system",
+  connectionString: process.env.DB_URL,
 });
 
 // const createTblQry = `CREATE TABLE accounts(

@@ -187,6 +187,6 @@ ORDER BY f.created_at DESC`;
   }
 });
 
-app.listen(process.env.PORT || 5000, () => {
+app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`);
 });
