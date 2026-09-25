@@ -28,8 +28,14 @@ const ChatRoom: React.FC = () => {
     timestamp: string;
     sender_id: string;
   }
+  interface Connection_user_name {
+    id: string;
+    user__first_name: string;
+    user__last_name: string;
+  }
   const baseUrl = import.meta.env.VITE_API_URL;
   const { friendId } = useParams<{ friendId: string }>();
+  const [friendName, setfriendName] = useState<Connection_user_name[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatMessage, setChatmessage] = useState<string>("");
   const token = localStorage.getItem("token");
@@ -46,6 +52,8 @@ const ChatRoom: React.FC = () => {
           },
         });
         const data = await result.json();
+
+        setfriendName(data.connection_name);
         if (data.messages.length == 0) {
           console.log("No messages availables");
         } else {
@@ -59,6 +67,8 @@ const ChatRoom: React.FC = () => {
     };
     getMessages();
   }, [friendId]);
+
+
   const getMessages = async () => {
     try {
       const result = await fetch(`${baseUrl}/getAllmessages/${friendId}`, {
@@ -69,18 +79,21 @@ const ChatRoom: React.FC = () => {
         },
       });
       const data = await result.json();
+
       if (data.messages.length == 0) {
         console.log("No messages availables");
       } else {
         console.log("There are messages");
         console.log(messages);
         setMessages(data.messages);
+        setfriendName(data.connection_name);
       }
       console.log(data);
     } catch (error) {
       console.log(error);
     }
   };
+
 
   const sendMessage = async () => {
     const token = localStorage.getItem("token");
@@ -105,10 +118,14 @@ const ChatRoom: React.FC = () => {
     }
   };
 
+
+
   const relocateHome = () => {
     console.log("Sending you back to the home page");
     router.push("/chatHome", "back", "pop");
   };
+
+  
   const formatMessageTime = (timestamp: string) => {
     const messageDate = new Date(timestamp);
     const now = new Date();
@@ -143,7 +160,16 @@ const ChatRoom: React.FC = () => {
 
           <IonImg src={avatar} />
           <div>
-            <div>Julien Addy</div>
+            <div>
+              {friendName.length > 0 ? (
+                <div>
+                  {friendName[0].user__first_name}{" "}
+                  {friendName[0].user__last_name}
+                </div>
+              ) : (
+                <div>No messages availabe. Start a message with Doku</div>
+              )}
+            </div>
             <div>Active Now</div>
           </div>
           <IonIcon src={callOutline} />
@@ -178,7 +204,18 @@ const ChatRoom: React.FC = () => {
               </div>
             ))
           ) : (
-            <div>No messages availabe. Start a message with Doku</div>
+            <div>
+              <div>
+                {friendName.length > 0 ? (
+                  <div>
+                    Start a conversation with {friendName[0].user__first_name}{" "}
+                    {friendName[0].user__last_name}
+                  </div>
+                ) : (
+                  <div>No messages availabe. Start a message with Doku</div>
+                )}
+              </div>
+            </div>
           )}
         </div>
       </IonContent>

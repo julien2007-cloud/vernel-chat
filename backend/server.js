@@ -126,6 +126,29 @@ app.post("/createConnection", authenticateToken, async (req, res) => {
     console.log(error);
   }
 });
+//this is to add to the outstanding db so that you can update the ui if ou haven't opened the message
+//insert into outstanding db
+app.post(
+  "/outstandingMessages/:friendId",
+  authenticateToken,
+  async (req, res) => {
+    const newfriend_id = req.params.userId;
+    const myId = req.user.userId;
+
+    const sql_to_insert_connection = `INSERT INTO outstandingDB (sender_id, receiver_id) VALUES ($1, $2)`;
+    try {
+      const result = await pool.query(sql_to_insert_connection, [
+        myId,
+        newfriend_id,
+      ]);
+      console.log("Outstanding message db has been updated");
+      res.status(200).json(result.rows);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 // this is for when your inside the chatRoom then you call this to get all your messages
 app.get("/getAllmessages/:friendId", authenticateToken, async (req, res) => {
@@ -147,13 +170,11 @@ app.get("/getAllmessages/:friendId", authenticateToken, async (req, res) => {
     ]);
     console.log(name_result);
     console.log(result);
-    res
-      .status(200)
-      .json({
-        success: true,
-        messages: result.rows,
-        connection_name: name_result.rows,
-      });
+    res.status(200).json({
+      success: true,
+      messages: result.rows,
+      connection_name: name_result.rows,
+    });
   } catch (error) {
     console.log(error);
   }
