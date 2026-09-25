@@ -19,6 +19,7 @@ const FindFriend: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const router = useIonRouter();
   const [addedUsers, setAddedUsers] = useState<string[]>([]);
+  const baseUrl = import.meta.env.VITE_API_URL;
   const relocateHome = (e: React.MouseEvent) => {
     e.preventDefault();
     router.push("/chatHome", "back");
@@ -32,7 +33,7 @@ const FindFriend: React.FC = () => {
     const getExistingusers = async () => {
       try {
         const token = localStorage.getItem("token");
-        const result = await fetch("http://localhost:5000/findallUsers", {
+        const result = await fetch(`${baseUrl}/findallUsers`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -58,7 +59,7 @@ const FindFriend: React.FC = () => {
     setAddedUsers((prev) => [...prev, userId]);
     try {
       const token = localStorage.getItem("token");
-      const result = await fetch("http://localhost:5000/createConnection", {
+      const result = await fetch(`${baseUrl}/createConnection`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

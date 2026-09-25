@@ -19,12 +19,14 @@ import {
 import React, { useEffect, useState } from "react";
 import avatar from "../../images/avatar.png";
 import { useParams } from "react-router";
+import "./chatRoom.css";
 
 const ChatRoom: React.FC = () => {
   const router = useIonRouter();
   interface Message {
     message: string;
     timestamp: string;
+    sender_id: string;
   }
   const baseUrl = import.meta.env.VITE_API_URL;
   const { friendId } = useParams<{ friendId: string }>();
@@ -33,6 +35,7 @@ const ChatRoom: React.FC = () => {
   const token = localStorage.getItem("token");
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     const getMessages = async () => {
       try {
         const result = await fetch(`${baseUrl}/getAllmessages/${friendId}`, {
@@ -58,21 +61,19 @@ const ChatRoom: React.FC = () => {
   }, [friendId]);
   const getMessages = async () => {
     try {
-      const result = await fetch(
-        `http://localhost:5000/getAllmessages/${friendId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const result = await fetch(`${baseUrl}/getAllmessages/${friendId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await result.json();
       if (data.messages.length == 0) {
         console.log("No messages availables");
       } else {
         console.log("There are messages");
+        console.log(messages);
         setMessages(data.messages);
       }
       console.log(data);
@@ -85,7 +86,7 @@ const ChatRoom: React.FC = () => {
     const token = localStorage.getItem("token");
     console.log(chatMessage);
     try {
-      const result = await fetch("http://localhost:5000/postMessage", {
+      const result = await fetch(`${baseUrl}/postMessage`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -108,11 +109,34 @@ const ChatRoom: React.FC = () => {
     console.log("Sending you back to the home page");
     router.push("/chatHome", "back", "pop");
   };
+  const formatMessageTime = (timestamp: string) => {
+    const messageDate = new Date(timestamp);
+    const now = new Date();
 
+    const isToday = messageDate.toDateString() === now.toDateString();
+
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    const isYesterday = messageDate.toDateString() === yesterday.toDateString();
+
+    const time = messageDate.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
+    if (isToday) return time;
+    if (isYesterday) return `Yesterday, ${time}`;
+
+    const dateStr = messageDate.toLocaleDateString([], {
+      month: "short",
+      day: "numeric",
+    });
+    return `${dateStr}, ${time}`;
+  };
   return (
     <IonPage>
-      <IonHeader>
-        <IonItem>
+      <IonContent>
+        <IonItem className="header-bar">
           <IonButton onClick={relocateHome}>
             <IonIcon icon={chevronBackOutline} />
           </IonButton>
@@ -126,15 +150,32 @@ const ChatRoom: React.FC = () => {
           <IonIcon src={videocamOutline} />
           <IonIcon src={informationCircleOutline} />
         </IonItem>
-      </IonHeader>
-      <IonContent>
-        <div>
+
+        <div className="chat-area">
           {messages.length > 0 ? (
             messages.map((message, index) => (
-              <IonItem key={index}>
-                {message.message}{" "}
-                {new Date(message.timestamp).toLocaleTimeString()}
-              </IonItem>
+              <div id={message.sender_id} key={index}>
+                {message.sender_id == friendId ? (
+                  <>
+                    <IonItem className="friend-message">
+                      {" "}
+                      <div>{message.message} </div>
+                    </IonItem>
+                    <div className="msg-time">
+                      {formatMessageTime(message.timestamp)}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <IonItem className="user-message">
+                      <div>{message.message}</div>
+                    </IonItem>
+                    <div className="msg-time">
+                      {formatMessageTime(message.timestamp)}
+                    </div>
+                  </>
+                )}
+              </div>
             ))
           ) : (
             <div>No messages availabe. Start a message with Doku</div>
@@ -142,25 +183,23 @@ const ChatRoom: React.FC = () => {
         </div>
       </IonContent>
 
-      <IonFooter>
-        <IonItem>
-          <IonInput
-            placeholder="Type message here"
-            value={chatMessage}
-            onIonInput={(e) => {
-              setChatmessage(e.detail.value ?? "");
-            }}
-          />
+      <IonItem className="input-area">
+        <IonInput
+          placeholder="Type message here"
+          value={chatMessage}
+          onIonInput={(e) => {
+            setChatmessage(e.detail.value ?? "");
+          }}
+        />
 
-          <IonButton
-            onClick={() => {
-              sendMessage();
-            }}
-          >
-            Send
-          </IonButton>
-        </IonItem>
-      </IonFooter>
+        <IonButton
+          onClick={() => {
+            sendMessage();
+          }}
+        >
+          Send
+        </IonButton>
+      </IonItem>
     </IonPage>
   );
 };

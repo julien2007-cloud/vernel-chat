@@ -1,0 +1,142 @@
+/* PAGE */
+ion-content {
+  --background: #ffffff;
+}
+
+/* HEADER BAR */
+.header-bar {
+  --background: #ffffff;
+  --border-width: 0 0 1px 0;
+  --border-color: #e5e7eb;
+  --padding-start: 8px;
+  --inner-padding-end: 8px;
+  --min-height: 60px;
+  margin: 0;
+}
+
+.header-bar ion-button {
+  --background: transparent;
+  --box-shadow: none;
+  --color: #3b82f6;
+  --padding-start: 0;
+  --padding-end: 0;
+  margin: 0 8px 0 0;
+}
+
+.header-bar ion-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.header-bar > div {
+  flex: 1;
+}
+
+.header-bar > div > div:first-child {
+  font-weight: 600;
+  font-size: 15px;
+  color: #111827;
+}
+
+.header-bar > div > div:last-child {
+  font-size: 12px;
+  color: #22c55e;
+}
+
+.header-bar ion-icon {
+  font-size: 20px;
+  color: #6b7280;
+  margin-left: 14px;
+}
+
+/* CHAT AREA */
+.chat-area {
+  padding: 16px 12px;
+}
+
+.chat-area > div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.chat-area > div:has(.friend-message) {
+  align-items: flex-start;
+}
+
+.chat-area > div:has(.user-message) {
+  align-items: flex-end;
+}
+
+/* BUBBLES */
+.friend-message,
+.user-message {
+  display: block;
+  width: fit-content;
+  max-width: 75%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+
+  --inner-border-width: 0;
+  --border-width: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+  --min-height: auto;
+}
+
+.friend-message {
+  --background: #f0f0f0;
+  background: #f0f0f0;
+  color: #1f2937;
+}
+
+.user-message {
+  --background: linear-gradient(90deg, #3b82f6, #a855f7);
+  background: linear-gradient(90deg, #3b82f6, #a855f7);
+  color: #ffffff;
+}
+
+.msg-time {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.input-area {
+  --background: #ffffff;
+  background: #ffffff;
+  --border-width: 1px 0 0 0;
+  --border-color: #e5e7eb;
+  --padding-start: 12px;
+  --inner-padding-end: 12px;
+  padding: 8px 0;
+  margin: 0;
+}
+
+If the bar persists after that
+.input-area ion-input {
+  --background: #f1f2f4;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  border-radius: 999px;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.input-area ion-button {
+  --background: linear-gradient(135deg, #3b82f6, #a855f7);
+  --border-radius: 999px;
+  --box-shadow: none;
+  height: 40px;
+  font-weight: 600;
+  text-transform: none;
+  margin: 0;
+}

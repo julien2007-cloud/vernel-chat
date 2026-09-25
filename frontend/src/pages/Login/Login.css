@@ -5,3 +5,169 @@
     height: 70px;
 
 }
+
+.main-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 42px 30px 30px;
+}
+
+
+.main-container > img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin: 0 auto 18px;
+}
+
+.main-container > p {
+  margin: 0 0 48px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 400;
+  color: #7b8190;
+}
+
+
+.main-container h1 {
+  margin: 0 0 3px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  color: #111827;
+}
+
+
+/* =========================
+   ION ITEMS
+========================= */
+
+.main-container ion-item {
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+  --min-height: auto;
+  margin: 0 0 20px;
+}
+
+
+/* =========================
+   FIELD BOX
+========================= */
+
+.fieldBox-others {
+  width: 100%;
+}
+
+.fieldBox-others > div {
+  color: #687184;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.2px;
+}
+
+
+/* =========================
+   INPUT
+========================= */
+
+.signup-input {
+  width: 100%;
+  --color: #1f2937;
+  --placeholder-color: #9ca3af;
+  --placeholder-opacity: 1;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  min-height: 52px;
+  border-radius: 14px;
+  font-size: 16px;
+  box-sizing: border-box;
+  padding-bottom: 40px
+}
+
+/* Focused input */
+.signup-input.has-focus {
+  border-color: #5865f2;
+  box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.08);
+}
+
+
+/* =========================
+   FORGOT PASSWORD
+========================= */
+
+.main-container > ion-router-link {
+  align-self: flex-end;
+
+  margin-top: -3px;
+  margin-bottom: 30px;
+
+  color: #007aff;
+  font-size: 14px;
+  font-weight: 500;
+
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+/* =========================
+   LOGIN BUTTON
+========================= */
+
+.main-container > ion-button {
+  width: 100%;
+  height: 56px;
+margin-top: 90px;
+  --background: linear-gradient(
+    90deg,
+    #0788ff 0%,
+    #5147f5 50%,
+    #9b00ff 100%
+  );
+
+  --background-hover: linear-gradient(
+    90deg,
+    #0788ff 0%,
+    #5147f5 50%,
+    #9b00ff 100%
+  );
+
+  --color: #ffffff;
+
+  --border-radius: 30px;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  text-transform: none;
+
+  box-shadow: 0 8px 20px rgba(91, 91, 97, 0.22);
+}
+
+
+/* =========================
+   CREATE ACCOUNT
+========================= */
+
+.main-container ion-item:last-child {
+  justify-content: center;
+  text-align: center;
+}
+
+.main-container ion-item:last-child p {
+  margin: 0;
+  color: #8b91a0;
+  font-size: 14px;
+}
+
+.main-container ion-item:last-child ion-router-link {
+  margin: 0 0 0 4px;
+  color: #8a00ff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+} 

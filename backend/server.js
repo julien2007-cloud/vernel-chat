@@ -121,6 +121,7 @@ app.post("/createConnection", authenticateToken, async (req, res) => {
       myId,
       newfriend_id,
     ]);
+    console.log("Connecction has been created");
     console.log(result);
   } catch (error) {
     console.log(error);
@@ -130,7 +131,7 @@ app.post("/createConnection", authenticateToken, async (req, res) => {
 app.get("/getAllmessages/:friendId", authenticateToken, async (req, res) => {
   const user_id = req.user.userId;
   const connection_id = req.params.friendId;
-  const sql_to_get_messages = `SELECT message, timestamp FROM messages WHERE
+  const sql_to_get_messages = `SELECT message, timestamp, sender_id FROM messages WHERE
    (sender_id = $1 AND recipient_id = $2) OR
    (sender_id = $2 AND recipient_id = $1)
    ORDER BY timestamp ASC `;
