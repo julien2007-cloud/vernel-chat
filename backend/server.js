@@ -113,8 +113,7 @@ app.get("/findallUsers", authenticateToken, async (req, res) => {
 app.post("/createConnection", authenticateToken, async (req, res) => {
   const newfriend_id = req.body.userId;
   const myId = req.user.userId;
-  // const sql_Query_to_find_usersNames = `SELECT user_id, user__first_name, user__last_name FROM accounts
-  // WHERE user_id = $1`;
+
   const sql_to_insert_connection = `INSERT INTO connectionDB (user_id, newfriend_id) VALUES ($1, $2)`;
   try {
     const result = await pool.query(sql_to_insert_connection, [
@@ -127,6 +126,7 @@ app.post("/createConnection", authenticateToken, async (req, res) => {
     console.log(error);
   }
 });
+
 // this is for when your inside the chatRoom then you call this to get all your messages
 app.get("/getAllmessages/:friendId", authenticateToken, async (req, res) => {
   const user_id = req.user.userId;
@@ -135,14 +135,25 @@ app.get("/getAllmessages/:friendId", authenticateToken, async (req, res) => {
    (sender_id = $1 AND recipient_id = $2) OR
    (sender_id = $2 AND recipient_id = $1)
    ORDER BY timestamp ASC `;
-
+  const sql_Query_to_find_usersNames = `SELECT user_id, user__first_name, user__last_name FROM accounts
+  WHERE user_id = $1`;
   try {
     const result = await pool.query(sql_to_get_messages, [
       user_id,
       connection_id,
     ]);
+    const name_result = await pool.query(sql_Query_to_find_usersNames, [
+      connection_id,
+    ]);
+    console.log(name_result);
     console.log(result);
-    res.status(200).json({ success: true, messages: result.rows });
+    res
+      .status(200)
+      .json({
+        success: true,
+        messages: result.rows,
+        connection_name: name_result.rows,
+      });
   } catch (error) {
     console.log(error);
   }
