@@ -153,6 +153,7 @@ const ChatHome: React.FC = () => {
     user_id: string;
     user__first_name: string;
     user__last_name: string;
+    unread_count: number;
   }
   useEffect(() => {
     const getAllfriends = async () => {
@@ -238,9 +239,13 @@ const ChatHome: React.FC = () => {
 
                   <div className="chat-meta" slot="end">
                     <p className="chat-time">2m</p>
-                    <div className="chat-badge" style={{ fontSize: "10px" }}>
-                      3
-                    </div>
+                    {friend.unread_count > 0 ? (
+                      <div className="chat-badge" style={{ fontSize: "10px" }}>
+                        {friend.unread_count}
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </IonItem>
               );
