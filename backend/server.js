@@ -102,7 +102,7 @@ app.get("/findallUsers", authenticateToken, async (req, res) => {
    ORDER BY user__first_name`;
   try {
     const result = await pool.query(query_to_find_other_users, [userId]);
-    console.log(result);
+
     res.status(200).json({ success: true, users: result.rows });
   } catch (error) {
     console.log(error);
@@ -121,34 +121,34 @@ app.post("/createConnection", authenticateToken, async (req, res) => {
       newfriend_id,
     ]);
     console.log("Connecction has been created");
-    console.log(result);
   } catch (error) {
     console.log(error);
   }
 });
 //this is to add to the outstanding db so that you can update the ui if ou haven't opened the message
 //insert into outstanding db
-app.post(
-  "/outstandingMessages/:friendId",
-  authenticateToken,
-  async (req, res) => {
-    const newfriend_id = req.params.userId;
-    const myId = req.user.userId;
+// app.post(
+//   "/outstandingMessages/:friendId",
+//   authenticateToken,
+//   async (req, res) => {
+//     const newfriend_id = req.params.friendId;
+//     console.log(newfriend_id);
+//     const myId = req.user.userId;
 
-    const sql_to_insert_connection = `INSERT INTO outstandingDB (sender_id, receiver_id) VALUES ($1, $2)`;
-    try {
-      const result = await pool.query(sql_to_insert_connection, [
-        myId,
-        newfriend_id,
-      ]);
-      console.log("Outstanding message db has been updated");
-      res.status(200).json(result.rows);
-      console.log(result);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
+//     const sql_to_insert_connection = `INSERT INTO outstandingDB (sender_id, receiver_id) VALUES ($1, $2)`;
+//     try {
+//       const result = await pool.query(sql_to_insert_connection, [
+//         myId,
+//         newfriend_id,
+//       ]);
+//       console.log("Outstanding message db has been updated");
+//       res.status(200).json(result.rows);
+//       console.log(result);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }
+// );
 
 // this is for when your inside the chatRoom then you call this to get all your messages
 app.get("/getAllmessages/:friendId", authenticateToken, async (req, res) => {
@@ -160,6 +160,7 @@ app.get("/getAllmessages/:friendId", authenticateToken, async (req, res) => {
    ORDER BY timestamp ASC `;
   const sql_Query_to_find_usersNames = `SELECT user_id, user__first_name, user__last_name FROM accounts
   WHERE user_id = $1`;
+
   try {
     const result = await pool.query(sql_to_get_messages, [
       user_id,
@@ -168,8 +169,12 @@ app.get("/getAllmessages/:friendId", authenticateToken, async (req, res) => {
     const name_result = await pool.query(sql_Query_to_find_usersNames, [
       connection_id,
     ]);
-    console.log(name_result);
-    console.log(result);
+    await pool.query(
+      `UPDATE messages SET is_read = true
+   WHERE sender_id = $1 AND recipient_id = $2 AND is_read = false`,
+      [connection_id, user_id]
+    );
+
     res.status(200).json({
       success: true,
       messages: result.rows,
@@ -177,6 +182,9 @@ app.get("/getAllmessages/:friendId", authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to load messages" });
   }
 });
 // this partucular function is to add a message to the db
@@ -191,7 +199,7 @@ app.post("/postMessage", authenticateToken, async (req, res) => {
       receiverId,
       message,
     ]);
-    console.log(result);
+
     res.status(200).json({ success: true, messages: result.rows });
   } catch (error) {
     console.log(error);
@@ -199,22 +207,35 @@ app.post("/postMessage", authenticateToken, async (req, res) => {
 });
 
 // even if someone has added me from somewhere and not sent me a message yet will show oon chatHome
-
+//load the unread message count
 app.get("/getAllconnectedfriends", authenticateToken, async (req, res) => {
   const userId = req.user.userId;
-  const sql_to_get_all_your_friends_and_chat = `SELECT a.user_id, a.user__first_name, a.user__last_name, f.created_at
-FROM accounts a
-JOIN connectiondb f
-  ON (f.user_id = $1 AND f.newfriend_id = a.user_id)
-  OR (f.newfriend_id = $1 AND f.user_id = a.user_id)
-ORDER BY f.created_at DESC`;
+  //   const sql_to_get_all_your_friends_and_chat = `SELECT a.user_id, a.user__first_name, a.user__last_name, f.created_at
+  // FROM accounts a
+  // JOIN connectiondb f
+  //   ON (f.user_id = $1 AND f.newfriend_id = a.user_id)
+  //   OR (f.newfriend_id = $1 AND f.user_id = a.user_id)
+  // ORDER BY f.created_at DESC`;
+  const sql_to_get_all_your_friends_and_chat = `
+  SELECT a.user_id,
+         a.user__first_name,
+         a.user__last_name,
+         f.created_at,
+         (SELECT COUNT(*)::int
+            FROM messages m
+           WHERE m.sender_id = a.user_id
+             AND m.recipient_id = $1
+             AND m.is_read = false) AS unread_count
+  FROM accounts a
+  JOIN connectiondb f
+    ON (f.user_id = $1 AND f.newfriend_id = a.user_id)
+    OR (f.newfriend_id = $1 AND f.user_id = a.user_id)
+  ORDER BY f.created_at DESC`;
   try {
     const result = await pool.query(sql_to_get_all_your_friends_and_chat, [
       userId,
     ]);
-
     res.status(200).send({ success: true, message: result.rows });
-    console.log(result.rows);
   } catch (error) {
     console.log(error);
   }
