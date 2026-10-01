@@ -39,6 +39,7 @@ const ChatRoom: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatMessage, setChatmessage] = useState<string>("");
   const token = localStorage.getItem("token");
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -68,7 +69,6 @@ const ChatRoom: React.FC = () => {
     getMessages();
   }, [friendId]);
 
-
   const getMessages = async () => {
     try {
       const result = await fetch(`${baseUrl}/getAllmessages/${friendId}`, {
@@ -94,7 +94,6 @@ const ChatRoom: React.FC = () => {
     }
   };
 
-
   const sendMessage = async () => {
     const token = localStorage.getItem("token");
     console.log(chatMessage);
@@ -113,19 +112,34 @@ const ChatRoom: React.FC = () => {
       const data = await result.json();
       setChatmessage(data.messages);
       getMessages();
+
+      // const result_data = await fetch(
+      //   `${baseUrl}/outstandingMessages/${friendId}`,
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
+      // if (!result.ok) {
+      
+      //   throw new Error(`Request failed with status ${result.status}`);
+      // }
+      // const result_data_outstanding = await result_data.json();
+      // console.log(result_data_outstanding);
+      console.log("Data saved to outstanding DB");
     } catch (error) {
       console.log(error);
     }
   };
-
-
 
   const relocateHome = () => {
     console.log("Sending you back to the home page");
     router.push("/chatHome", "back", "pop");
   };
 
-  
   const formatMessageTime = (timestamp: string) => {
     const messageDate = new Date(timestamp);
     const now = new Date();

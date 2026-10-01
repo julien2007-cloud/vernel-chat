@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1051029776498",
+    "project_id": "vernel-chat",
+    "storage_bucket": "vernel-chat.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051029776498:android:2538ce821e9037b56a7aeb",
+        "android_client_info": {
+          "package_name": "com.vernel.vernelChat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEZ2C37R2ELI6Xtl_Lid_JdSZ5n3FRBQI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
