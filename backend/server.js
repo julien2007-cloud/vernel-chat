@@ -6,6 +6,7 @@ const pool = require("./database");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const authenticateToken = require("./auth");
+const { notifyUser } = require("./push");
 app.use(cors());
 app.use(express.json());
 
@@ -188,6 +189,23 @@ app.get("/getAllmessages/:friendId", authenticateToken, async (req, res) => {
   }
 });
 // this partucular function is to add a message to the db
+// app.post("/postMessage", authenticateToken, async (req, res) => {
+//   const senderId = req.user.userId;
+//   const receiverId = req.body.recipientId;
+//   const message = req.body.message;
+//   const sql_to_post_messages = `INSERT INTO messages (sender_id, recipient_id, message) VALUES ($1, $2, $3) `;
+//   try {
+//     const result = await pool.query(sql_to_post_messages, [
+//       senderId,
+//       receiverId,
+//       message,
+//     ]);
+
+//     res.status(200).json({ success: true, messages: result.rows });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
 app.post("/postMessage", authenticateToken, async (req, res) => {
   const senderId = req.user.userId;
   const receiverId = req.body.recipientId;
@@ -200,9 +218,24 @@ app.post("/postMessage", authenticateToken, async (req, res) => {
       message,
     ]);
 
+    // Respond first so the sender is never delayed by push
     res.status(200).json({ success: true, messages: result.rows });
+
+    // Then send the push (errors only get logged)
+    const { rows } = await pool.query(
+      "SELECT user__first_name FROM accounts WHERE user_id = $1",
+      [senderId]
+    );
+    const senderName = rows[0]?.user__first_name || "New message";
+
+    notifyUser(receiverId, {
+      title: senderName,
+      body: message.length > 100 ? message.slice(0, 100) + "…" : message,
+      data: { type: "message", senderId, chatId: senderId },
+    }).catch((err) => console.error("Push failed:", err));
   } catch (error) {
     console.log(error);
+    if (!res.headersSent) res.status(500).json({ success: false });
   }
 });
 
@@ -238,6 +271,43 @@ app.get("/getAllconnectedfriends", authenticateToken, async (req, res) => {
     res.status(200).send({ success: true, message: result.rows });
   } catch (error) {
     console.log(error);
+  }
+});
+
+// Save this device's FCM token for the logged-in user
+app.post("/api/push/register", authenticateToken, async (req, res) => {
+  const userId = req.user.userId;
+  const { token, platform } = req.body;
+  if (!token) return res.status(400).json({ error: "token required" });
+
+  try {
+    // If the token already exists, reassign it to the current user
+    // (handles two accounts logging in on the same phone)
+    await pool.query(
+      `INSERT INTO device_tokens (user_id, token, platform)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (token)
+       DO UPDATE SET user_id = EXCLUDED.user_id, updated_at = NOW()`,
+      [userId, token, platform]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("register token error:", err);
+    res.status(500).json({ error: "failed to save token" });
+  }
+});
+
+app.post("/api/push/unregister", authenticateToken, async (req, res) => {
+  const { token } = req.body;
+  try {
+    await pool.query(
+      "DELETE FROM device_tokens WHERE token = $1 AND user_id = $2",
+      [token, req.user.userId]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("unregister token error:", err);
+    res.status(500).json({ error: "failed to remove token" });
   }
 });
 

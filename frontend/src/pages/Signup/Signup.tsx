@@ -10,8 +10,12 @@ import {
 } from "@ionic/react";
 import "./Signup.css";
 import { useState } from "react";
+import { initPushNotifications } from "../../services/fcm/fcm";
 const Signup: React.FC = () => {
   const router = useIonRouter();
+  // Tapping a message notification opens that chat
+  const openChat = (chatId: string) =>
+    router.push(`/chatRoom/${chatId}`, "forward");
   const baseUrl = import.meta.env.VITE_API_URL;
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
@@ -45,6 +49,7 @@ const Signup: React.FC = () => {
         const json = await push_new_user_result.json();
         console.log("Sign up completed", json);
         localStorage.setItem("token", json.token);
+        initPushNotifications(json.token, openChat).catch(console.error);
         router.push("/chatHome", "forward", "replace");
       } else {
         setMismatch(true);

@@ -1,2 +1,4 @@
 node_modules/
 .env
+# vernel-chat-firebase-adminsdk-fbsvc-7281673579.json
+firebase-service-account.json

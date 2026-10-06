@@ -9,7 +9,7 @@ import {
   IonRouterLink,
   useIonRouter,
 } from "@ionic/react";
-import { personAddOutline, search } from "ionicons/icons";
+import { search } from "ionicons/icons";
 import avatar from "../../images/avatar.png";
 import "./chatHome.css";
 import React, { useEffect, useState } from "react";
