@@ -1,7 +1,8 @@
 const pool = require("./database");
-const { getMessaging } = require("./firebase");
+const { getMessaging, pushEnabled } = require("./firebase");
 
 async function notifyUser(userId, { title, body, data = {} }) {
+  if (!pushEnabled) return;
   const { rows } = await pool.query(
     "SELECT token FROM device_tokens WHERE user_id = $1",
     [userId]

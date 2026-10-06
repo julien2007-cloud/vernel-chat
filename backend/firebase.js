@@ -18,13 +18,21 @@ const { getMessaging } = require("firebase-admin/messaging");
 const KEY_FILE = "firebase-service-account.json";
 const keyPath = [path.join("/etc/secrets", KEY_FILE), path.join(__dirname, KEY_FILE)]
   .find((p) => fs.existsSync(p));
-if (!keyPath) {
-  throw new Error(`${KEY_FILE} not found in /etc/secrets or ${__dirname}`);
-}
-const serviceAccount = JSON.parse(fs.readFileSync(keyPath, "utf8"));
 
-if (!getApps().length) {
-  initializeApp({ credential: cert(serviceAccount) });
+// Without the key, keep the chat server running and just skip push
+let pushEnabled = false;
+if (keyPath) {
+  const serviceAccount = JSON.parse(fs.readFileSync(keyPath, "utf8"));
+  if (!getApps().length) {
+    initializeApp({ credential: cert(serviceAccount) });
+  }
+  pushEnabled = true;
+} else {
+  const secrets = fs.existsSync("/etc/secrets") ? fs.readdirSync("/etc/secrets") : [];
+  console.warn(
+    `Push notifications disabled: ${KEY_FILE} not found in /etc/secrets or ${__dirname}. ` +
+      `Files in /etc/secrets: [${secrets.join(", ")}]`
+  );
 }
 
-module.exports = { getMessaging };
+module.exports = { getMessaging, pushEnabled };
