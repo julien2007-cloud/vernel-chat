@@ -1,15 +1,16 @@
 import {
   IonContent,
+  IonHeader,
+  IonToolbar,
   IonPage,
   IonItem,
   IonIcon,
   IonInput,
   IonImg,
   IonLabel,
-  IonRouterLink,
   useIonRouter,
 } from "@ionic/react";
-import { search } from "ionicons/icons";
+import { personAddOutline, search, settingsOutline } from "ionicons/icons";
 import avatar from "../../images/avatar.png";
 import "./chatHome.css";
 import React, { useEffect, useState } from "react";
@@ -143,6 +144,7 @@ const ChatHome: React.FC = () => {
   const router = useIonRouter();
   const token = localStorage.getItem("token");
   const [friendsArray, setfriendsArray] = useState<friend[]>([]);
+  const [searchText, setSearchText] = useState("");
   const baseUrl = import.meta.env.VITE_API_URL;
   // interface friend {
   //   id: string;
@@ -165,11 +167,18 @@ const ChatHome: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+        // Expired token, or one signed by a different server -> log in again
+        if (result.status === 401 || result.status === 403) {
+          localStorage.removeItem("token");
+          router.push("/loginUser", "root", "replace");
+          return;
+        }
         if (!result.ok) {
           console.error("Failed to fetch friends:", result.status);
+          return;
         }
         const data = await result.json();
-        setfriendsArray(data.message);
+        setfriendsArray(data.message ?? []);
         console.log(data);
       } catch (error) {
         console.log(error);
@@ -183,41 +192,57 @@ const ChatHome: React.FC = () => {
     router.push(`chatRoom/${friendId}`, "forward");
   };
 
+  const query = searchText.trim().toLowerCase();
+  const visibleFriends = friendsArray.filter((friend) =>
+    `${friend.user__first_name} ${friend.user__last_name}`
+      .toLowerCase()
+      .includes(query)
+  );
+
   return (
     <IonPage>
-      <IonContent className="main-page">
-        <IonItem lines="none">
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <div
-              style={{
-                background: "#0084FF",
-                width: "10px",
-                height: "10px",
-                borderRadius: "5px",
-              }}
-            ></div>
-            <div
-              style={{
-                fontSize: "24px",
-                color: "#111827",
-                fontWeight: "bolder",
-              }}
-            >
-              Vernel Chat
+      <IonHeader className="ion-no-border home-header">
+        <IonToolbar className="home-toolbar">
+          <div className="home-title-row">
+            <div className="home-brand">
+              <span className="home-brand-dot" />
+              <h1 className="home-title">Vernel Chat</h1>
             </div>
-          </div>{" "}
-          {/* <IonIcon slot="end" icon={personAddOutline} /> */}
-          <IonRouterLink slot="end" routerLink="chatHome/findFriend">
-            Find friend
-          </IonRouterLink>
-        </IonItem>
-        <IonItem className="search-input" lines="none">
-          <IonIcon icon={search} />
-          <IonInput className="search-friend-input" placeholder="Search Chat" />
-        </IonItem>
+            <div className="home-actions">
+              <button
+                className="find-friend-btn"
+                onClick={() => router.push("/chatHome/findFriend", "forward")}
+              >
+                <IonIcon icon={personAddOutline} />
+                <span>Find friend</span>
+              </button>
+              <button
+                className="icon-btn"
+                aria-label="Settings"
+                onClick={() => router.push("/settings", "forward")}
+              >
+                <IonIcon icon={settingsOutline} />
+              </button>
+            </div>
+          </div>
+          <div className="search-bar">
+            <IonIcon icon={search} />
+            <IonInput
+              className="search-friend-input"
+              placeholder="Search chats"
+              value={searchText}
+              onIonInput={(e) => setSearchText(e.detail.value ?? "")}
+              clearInput
+            />
+          </div>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="main-page">
         <div className="messages-block">
-          {friendsArray.length > 0 ? (
-            friendsArray.map((friend) => {
+          {friendsArray.length > 0 && visibleFriends.length === 0 ? (
+            <div className="empty-state">No chats match "{searchText}"</div>
+          ) : friendsArray.length > 0 ? (
+            visibleFriends.map((friend) => {
               return (
                 <IonItem
                   lines="none"
@@ -251,10 +276,8 @@ const ChatHome: React.FC = () => {
               );
             })
           ) : (
-            <div
-              style={{ textAlign: "center", padding: "20px", color: "gray" }}
-            >
-              Go to Find friend page to add a new user
+            <div className="empty-state">
+              Tap Find friend to start a new chat
             </div>
           )}
         </div>

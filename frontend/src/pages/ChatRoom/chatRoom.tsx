@@ -8,6 +8,7 @@ import {
   IonFooter,
   IonInput,
   IonButton,
+  IonToolbar,
   useIonRouter,
 } from "@ionic/react";
 import {
@@ -16,7 +17,7 @@ import {
   informationCircleOutline,
   videocamOutline,
 } from "ionicons/icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import avatar from "../../images/avatar.png";
 import { useParams } from "react-router";
 import "./chatRoom.css";
@@ -38,9 +39,23 @@ const ChatRoom: React.FC = () => {
   const [friendName, setfriendName] = useState<Connection_user_name[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatMessage, setChatmessage] = useState<string>("");
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
+  const contentRef = useRef<HTMLIonContentElement>(null);
+  const hasScrolled = useRef(false);
+
+  // Always show the newest message: jump to the bottom when the chat opens,
+  // then scroll smoothly when new messages arrive
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const duration = hasScrolled.current ? 300 : 0;
+    hasScrolled.current = true;
+    requestAnimationFrame(() => contentRef.current?.scrollToBottom(duration));
+  }, [messages]);
 
   useEffect(() => {
+    hasScrolled.current = false;
+    setLoading(true);
     const token = localStorage.getItem("token");
 
     const getMessages = async () => {
@@ -64,6 +79,8 @@ const ChatRoom: React.FC = () => {
         console.log(data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     getMessages();
@@ -94,9 +111,11 @@ const ChatRoom: React.FC = () => {
     }
   };
 
-  const sendMessage = async () => {
+  // text lets the "Say hi" chips send a message without typing
+  const sendMessage = async (text: string = chatMessage) => {
     const token = localStorage.getItem("token");
-    console.log(chatMessage);
+    console.log(text);
+    if (!text.trim()) return;
     try {
       const result = await fetch(`${baseUrl}/postMessage`, {
         method: "POST",
@@ -104,13 +123,13 @@ const ChatRoom: React.FC = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ recipientId: friendId, message: chatMessage }),
+        body: JSON.stringify({ recipientId: friendId, message: text.trim() }),
       });
       if (!result.ok) {
         throw new Error(`Request failed with status ${result.status}`);
       }
-      const data = await result.json();
-      setChatmessage(data.messages);
+      await result.json();
+      setChatmessage("");
       getMessages();
 
       // const result_data = await fetch(
@@ -166,8 +185,9 @@ const ChatRoom: React.FC = () => {
   };
   return (
     <IonPage>
-      <IonContent>
-        <IonItem className="header-bar">
+      <IonHeader className="ion-no-border">
+        <IonToolbar className="chat-toolbar">
+        <IonItem className="header-bar" lines="none">
           <IonButton onClick={relocateHome}>
             <IonIcon icon={chevronBackOutline} />
           </IonButton>
@@ -181,7 +201,7 @@ const ChatRoom: React.FC = () => {
                   {friendName[0].user__last_name}
                 </div>
               ) : (
-                <div>No messages availabe. Start a message with Doku</div>
+                <div>&nbsp;</div>
               )}
             </div>
             <div>Active Now</div>
@@ -190,7 +210,10 @@ const ChatRoom: React.FC = () => {
           <IonIcon src={videocamOutline} />
           <IonIcon src={informationCircleOutline} />
         </IonItem>
+        </IonToolbar>
+      </IonHeader>
 
+      <IonContent ref={contentRef} className="chat-content">
         <div className="chat-area">
           {messages.length > 0 ? (
             messages.map((message, index) => (
@@ -217,24 +240,42 @@ const ChatRoom: React.FC = () => {
                 )}
               </div>
             ))
-          ) : (
-            <div>
-              <div>
-                {friendName.length > 0 ? (
-                  <div>
-                    Start a conversation with {friendName[0].user__first_name}{" "}
-                    {friendName[0].user__last_name}
-                  </div>
-                ) : (
-                  <div>No messages availabe. Start a message with Doku</div>
-                )}
+          ) : loading ? null : (() => {
+            const raw = friendName[0]?.user__first_name ?? "";
+            const firstName = raw ? raw[0].toUpperCase() + raw.slice(1) : "";
+            return (
+            <div className="chat-empty">
+              <IonImg src={avatar} className="chat-empty-avatar" />
+              <div className="chat-empty-name">
+                {friendName[0]?.user__first_name} {friendName[0]?.user__last_name}
+              </div>
+              <div className="chat-empty-sub">You're connected on Vernel Chat</div>
+              <div className="chat-empty-hint">
+                Say hi to {firstName || "your friend"} to start the conversation
+              </div>
+              <div className="chat-empty-chips">
+                {[
+                  "👋 Hi!",
+                  `Hey ${firstName || "there"}!`,
+                  "How are you?",
+                ].map((starter) => (
+                  <button
+                    key={starter}
+                    className="chat-empty-chip"
+                    onClick={() => sendMessage(starter)}
+                  >
+                    {starter}
+                  </button>
+                ))}
               </div>
             </div>
-          )}
+            );
+          })()}
         </div>
       </IonContent>
 
-      <IonItem className="input-area">
+      <IonFooter className="ion-no-border chat-footer">
+      <IonItem className="input-area" lines="none">
         <IonInput
           placeholder="Type message here"
           value={chatMessage}
@@ -251,6 +292,7 @@ const ChatRoom: React.FC = () => {
           Send
         </IonButton>
       </IonItem>
+      </IonFooter>
     </IonPage>
   );
 };

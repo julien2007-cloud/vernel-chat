@@ -23,11 +23,15 @@ const Login: React.FC = () => {
     if (token != null) {
       console.log(token);
       initPushNotifications(token, openChat).catch(console.error);
-      router.push("/chatHome", "forward", "push");
+      // replace (not push) so Login doesn't stay mounted under chat home
+      router.push("/chatHome", "root", "replace");
     } else {
       console.log("The user has to login");
     }
-  }, [router]);
+    // Run once on open only: re-running on every navigation bounced users
+    // back to /chatHome whenever they opened a chat
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");

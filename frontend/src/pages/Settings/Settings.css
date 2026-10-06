@@ -1,0 +1,189 @@
+.settings-toolbar {
+  --background: var(--app-bg);
+  --padding-start: 8px;
+  --padding-end: 16px;
+  --padding-top: 6px;
+  --padding-bottom: 6px;
+}
+
+.settings-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+}
+
+.settings-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--app-text);
+  cursor: pointer;
+}
+
+.settings-back ion-icon {
+  font-size: 22px;
+}
+
+.settings-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--app-text);
+}
+
+.settings-page {
+  --background: var(--app-bg-grouped);
+}
+
+/* PROFILE CARD */
+.settings-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px;
+  margin-bottom: 10px;
+  background: var(--app-surface);
+}
+
+.settings-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.settings-avatar::part(image) {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.settings-profile-text {
+  min-width: 0;
+}
+
+.settings-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--app-text);
+  text-transform: capitalize;
+}
+
+.settings-email {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--app-text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ROWS */
+.settings-group {
+  margin-bottom: 10px;
+  background: var(--app-surface);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 60px;
+  padding: 10px 16px;
+  border: none;
+  background: var(--app-surface);
+  font-family: inherit;
+  text-align: left;
+}
+
+.settings-row + .settings-row {
+  border-top: 1px solid var(--app-divider);
+}
+
+.settings-row-icon {
+  font-size: 22px;
+  color: var(--app-text-2);
+  flex-shrink: 0;
+}
+
+.settings-row-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-row-title {
+  font-size: 15px;
+  color: var(--app-text);
+}
+
+.settings-row-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--app-text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-chevron {
+  font-size: 18px;
+  color: var(--app-text-3);
+}
+
+.settings-section-label {
+  padding: 14px 16px 2px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--app-accent);
+}
+
+.settings-section-label + .settings-row {
+  border-top: none;
+}
+
+.settings-tappable {
+  cursor: pointer;
+}
+
+.settings-tappable:active {
+  background: var(--app-pressed);
+}
+
+.settings-toggle {
+  --track-background: var(--app-border);
+  --track-background-checked: var(--app-accent);
+  --handle-background: #ffffff;
+  --handle-background-checked: #ffffff;
+  flex-shrink: 0;
+}
+
+.settings-logout {
+  cursor: pointer;
+}
+
+.settings-logout:active {
+  background: var(--app-danger-soft);
+}
+
+.settings-logout .settings-row-icon,
+.settings-logout .settings-row-title {
+  color: var(--app-danger);
+  font-weight: 500;
+}
+
+.settings-footer {
+  padding: 24px 16px calc(24px + var(--ion-safe-area-bottom, 0px));
+  text-align: center;
+  font-size: 12px;
+  color: var(--app-text-3);
+}

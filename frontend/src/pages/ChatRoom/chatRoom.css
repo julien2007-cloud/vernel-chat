@@ -1,13 +1,22 @@
 /* PAGE */
-ion-content {
-  --background: #ffffff;
+.chat-content {
+  --background: var(--app-bg);
 }
 
 /* HEADER BAR */
+.chat-toolbar {
+  --background: var(--app-bg);
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --min-height: 60px;
+}
+
 .header-bar {
-  --background: #ffffff;
+  --background: var(--app-bg);
   --border-width: 0 0 1px 0;
-  --border-color: #e5e7eb;
+  --border-color: var(--app-border);
   --padding-start: 8px;
   --inner-padding-end: 8px;
   --min-height: 60px;
@@ -17,7 +26,7 @@ ion-content {
 .header-bar ion-button {
   --background: transparent;
   --box-shadow: none;
-  --color: #3b82f6;
+  --color: var(--app-accent);
   --padding-start: 0;
   --padding-end: 0;
   margin: 0 8px 0 0;
@@ -38,17 +47,18 @@ ion-content {
 .header-bar > div > div:first-child {
   font-weight: 600;
   font-size: 15px;
-  color: #111827;
+  color: var(--app-text);
+  text-transform: capitalize;
 }
 
 .header-bar > div > div:last-child {
   font-size: 12px;
-  color: #22c55e;
+  color: var(--app-online);
 }
 
 .header-bar ion-icon {
   font-size: 20px;
-  color: #6b7280;
+  color: var(--app-text-2);
   margin-left: 14px;
 }
 
@@ -93,9 +103,9 @@ ion-content {
 }
 
 .friend-message {
-  --background: #f0f0f0;
-  background: #f0f0f0;
-  color: #1f2937;
+  --background: var(--app-bubble-in);
+  background: var(--app-bubble-in);
+  color: var(--app-bubble-in-text);
 }
 
 .user-message {
@@ -104,35 +114,111 @@ ion-content {
   color: #ffffff;
 }
 
+/* EMPTY CHAT */
+.chat-area > .chat-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 12vh 16px 0;
+  padding: 28px 20px 24px;
+  border-radius: 20px;
+  background: var(--app-fill);
+  text-align: center;
+}
+
+.chat-empty-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.chat-empty-avatar::part(image) {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.chat-empty-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--app-text);
+  text-transform: capitalize;
+}
+
+.chat-empty-sub {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--app-text-2);
+}
+
+.chat-empty-hint {
+  margin-top: 18px;
+  font-size: 14px;
+  color: var(--app-text-2);
+}
+
+.chat-empty-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.chat-empty-chip {
+  padding: 8px 14px;
+  border: 1px solid var(--app-border);
+  border-radius: 999px;
+  background: var(--app-bg);
+  color: var(--app-accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.chat-empty-chip:active {
+  background: var(--app-accent-soft);
+}
+
 .msg-time {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--app-text-3);
   margin-top: 4px;
 }
 
 .input-area {
-  --background: #ffffff;
-  background: #ffffff;
+  --background: var(--app-bg);
+  background: var(--app-bg);
   --border-width: 1px 0 0 0;
-  --border-color: #e5e7eb;
+  --border-color: var(--app-border);
   --padding-start: 12px;
   --inner-padding-end: 12px;
   padding: 8px 0;
   margin: 0;
 }
 
-If the bar persists after that
+/* Keep the input above the Android navigation bar */
+.chat-footer {
+  background: var(--app-bg);
+  padding-bottom: var(--ion-safe-area-bottom, 0px);
+}
+
 .input-area ion-input {
-  --background: #f1f2f4;
+  --background: var(--app-fill);
   --padding-start: 16px;
   --padding-end: 16px;
   border-radius: 999px;
+  overflow: hidden;
+  min-height: 42px !important;
   margin-right: 8px;
   font-size: 14px;
 }
 
 .input-area ion-button {
   --background: linear-gradient(135deg, #3b82f6, #a855f7);
+  --color: #ffffff;
   --border-radius: 999px;
   --box-shadow: none;
   height: 40px;

@@ -115,6 +115,7 @@ import { Capacitor } from "@capacitor/core";
 
     await PushNotifications.addListener("registration", async (token) => {
       console.log("FCM Registration Token:", token.value);
+      localStorage.setItem("fcmToken", token.value); // needed to unregister on logout
       try {
         const res = await fetch(`${API_URL}/api/push/register`, {
           method: "POST",
@@ -158,4 +159,26 @@ import { Capacitor } from "@capacitor/core";
     if (perm.receive !== "granted") return;
 
     await PushNotifications.register();
+  };
+
+  // On logout: stop this phone getting the user's notifications
+  export const unregisterPushNotifications = async (authToken: string) => {
+    if (!Capacitor.isNativePlatform()) return;
+    const fcmToken = localStorage.getItem("fcmToken");
+    if (fcmToken) {
+      try {
+        await fetch(`${API_URL}/api/push/unregister`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ token: fcmToken }),
+        });
+      } catch (e) {
+        console.error("Failed to unregister push token", e);
+      }
+      localStorage.removeItem("fcmToken");
+    }
+    await PushNotifications.removeAllListeners();
   };

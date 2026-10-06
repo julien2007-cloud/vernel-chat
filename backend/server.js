@@ -274,6 +274,22 @@ app.get("/getAllconnectedfriends", authenticateToken, async (req, res) => {
   }
 });
 
+// Profile of the logged-in user (used by the settings page)
+app.get("/me", authenticateToken, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT user_id, user__first_name, user__last_name, user_email
+         FROM accounts WHERE user_id = $1`,
+      [req.user.userId]
+    );
+    if (!rows.length) return res.status(404).json({ error: "user not found" });
+    res.json({ success: true, user: rows[0] });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false });
+  }
+});
+
 // Save this device's FCM token for the logged-in user
 app.post("/api/push/register", authenticateToken, async (req, res) => {
   const userId = req.user.userId;

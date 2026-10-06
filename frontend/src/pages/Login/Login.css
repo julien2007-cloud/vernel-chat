@@ -26,7 +26,7 @@
   text-align: center;
   font-size: 17px;
   font-weight: 400;
-  color: #7b8190;
+  color: var(--app-text-2);
 }
 
 
@@ -35,7 +35,7 @@
   text-align: center;
   font-size: 28px;
   font-weight: 600;
-  color: #111827;
+  color: var(--app-text);
 }
 
 
@@ -63,7 +63,7 @@
 }
 
 .fieldBox-others > div {
-  color: #687184;
+  color: var(--app-text-2);
   font-size: 13px !important;
   font-weight: 400 !important;
   letter-spacing: 0.2px;
@@ -76,8 +76,8 @@
 
 .signup-input {
   width: 100%;
-  --color: #1f2937;
-  --placeholder-color: #9ca3af;
+  --color: var(--app-text);
+  --placeholder-color: var(--app-text-3);
   --placeholder-opacity: 1;
   --padding-start: 16px;
   --padding-end: 16px;
@@ -105,7 +105,7 @@
   margin-top: -3px;
   margin-bottom: 30px;
 
-  color: #007aff;
+  color: var(--app-accent);
   font-size: 14px;
   font-weight: 500;
 
@@ -160,13 +160,13 @@ margin-top: 90px;
 
 .main-container ion-item:last-child p {
   margin: 0;
-  color: #8b91a0;
+  color: var(--app-text-2);
   font-size: 14px;
 }
 
 .main-container ion-item:last-child ion-router-link {
   margin: 0 0 0 4px;
-  color: #8a00ff;
+  color: var(--app-purple);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;

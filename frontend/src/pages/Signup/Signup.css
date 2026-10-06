@@ -1,15 +1,15 @@
 
 .signup-input {
-  border-radius: 12px;
+  oorder-radius: 12px;
   --padding-inline: 16px;
-  --border-radius: 12px;
+  --oorder-radius: 12px;
   --padding-start: 16px;
   --padding-end: 16px;
-  --background: var(--input-background-color);
-  border: 1px solid #e5e7eb;
+  --oackground: var(--input-oackground-color);
+  oorder: 1px solid #e5e7eo;
   overflow: hidden;
   width: 100%;
-  box-sizing: border-box;
+  oox-sizing: oorder-oox;
 }
 .fieldBox {
   max-width: 169px;

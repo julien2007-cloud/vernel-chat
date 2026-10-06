@@ -2,8 +2,70 @@
 http://ionicframework.com/docs/theming/ */
 :root {
   --ion-default-font: "Poppins", sans-serif;
-  --input-background-color:#F9FAFB;
+  --input-background-color: var(--app-fill);
+  /* Keep headers/footers clear of the Android status & nav bars.
+     Capacitor sets --safe-area-inset-* when the WebView can't do env() itself. */
+  --ion-safe-area-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --ion-safe-area-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+
+  /* App colors: light mode */
+  --app-bg: #ffffff;
+  --app-bg-grouped: #f5f6f8;
+  --app-surface: #ffffff;
+  --app-fill: #f3f4f6;
+  --app-pressed: #f3f4f6;
+  --app-text: #111827;
+  --app-text-2: #6b7280;
+  --app-text-3: #9ca3af;
+  --app-border: #e5e7eb;
+  --app-divider: #f0f1f3;
+  --app-accent: #0084ff;
+  --app-accent-soft: #eaf3ff;
+  --app-purple: #8a00ff;
+  --app-danger: #ef4444;
+  --app-danger-soft: #fef2f2;
+  --app-online: #22c55e;
+  --app-bubble-in: #f0f0f0;
+  --app-bubble-in-text: #1f2937;
+  --app-gradient: linear-gradient(135deg, #0084ff 0%, #a200ff 100%);
+  --app-bubble-out: linear-gradient(90deg, #3b82f6, #a855f7);
 }
+
+/* App colors: dark mode (html gets .ion-palette-dark from services/theme) */
+:root.ion-palette-dark {
+  --app-bg: #0e1116;
+  --app-bg-grouped: #0a0c10;
+  --app-surface: #161a21;
+  --app-fill: #1d222b;
+  --app-pressed: #1d222b;
+  --app-text: #f1f3f6;
+  --app-text-2: #a3aab6;
+  --app-text-3: #6b7280;
+  --app-border: #232832;
+  --app-divider: #1d222b;
+  --app-accent: #4aa3ff;
+  --app-accent-soft: rgba(74, 163, 255, 0.14);
+  --app-purple: #b57bff;
+  --app-danger: #f87171;
+  --app-danger-soft: rgba(248, 113, 113, 0.12);
+  --app-online: #34d399;
+  --app-bubble-in: #1d222b;
+  --app-bubble-in-text: #e5e7eb;
+}
+
+/* Make Ionic's own components (alerts, inputs, items) match the app's dark colors */
+:root.ion-palette-dark.md,
+:root.ion-palette-dark.ios {
+  --ion-background-color: var(--app-bg);
+  --ion-background-color-rgb: 14, 17, 22;
+  --ion-text-color: var(--app-text);
+  --ion-text-color-rgb: 241, 243, 246;
+  --ion-item-background: var(--app-bg);
+  --ion-toolbar-background: var(--app-bg);
+  --ion-overlay-background-color: var(--app-surface);
+  --ion-border-color: var(--app-border);
+}
+
 html.md {
   --ion-default-font: "Poppins", sans-serif;
 }
